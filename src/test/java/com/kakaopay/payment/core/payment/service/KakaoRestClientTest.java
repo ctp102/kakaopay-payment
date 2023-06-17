@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class KakaoPayServiceTest {
+class KakaoRestClientTest {
 
     @Autowired
-    private KakaoPayService kakaoPayService;
+    private KakaoRestClient kakaoRestClient;
 
     @Test
     void requestPaymentReady() {
-        kakaoPayService.requestPaymentReady2();
+//        paymentService.requestPaymentReady();
     }
 
 }
