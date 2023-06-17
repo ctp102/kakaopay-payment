@@ -1,0 +1,10 @@
+# Rest Template
+rest:
+  template:
+    connection-manager:
+      default-max-per-route: 100
+      max-total: 100
+    client-http-request:
+      evict-idle-connections: 10
+      connect-timeout: 30000
+      read-timeout: 30000
