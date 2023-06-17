@@ -1,5 +1,6 @@
 package com.kakaopay.payment.core.payment.service;
 
+import com.kakaopay.payment.core.payment.restclient.KakaoRestClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.kakaopay.payment.core.payment.dto;
+package com.kakaopay.payment.core.payment.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
