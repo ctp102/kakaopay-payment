@@ -3,12 +3,10 @@ package com.kakaopay.payment.core.payment.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#prepare-request-body
- */
+// https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#prepare-request-body
 @Getter
 @Setter
-public class PaymentReadyDto {
+public class PaymentReadyRequest {
 
     private String cid; // 가맹점 코드 10자(테스트 코드는 TC0ONETIME)
     private String cidSecret; // 가맹점 코드 인증키, 24자, 숫자와 영문 소문자 조합

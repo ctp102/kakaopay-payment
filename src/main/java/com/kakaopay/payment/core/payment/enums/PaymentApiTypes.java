@@ -11,12 +11,12 @@ public enum PaymentApiTypes {
     ORDER("https://kapi.kakao.com/v1/payment/order", "결제 조회")
     ;
 
+    private final String endPoint;
+    private final String description;
+
     PaymentApiTypes(String endPoint, String description) {
         this.endPoint = endPoint;
         this.description = description;
     }
-
-    private final String endPoint;
-    private final String description;
 
 }

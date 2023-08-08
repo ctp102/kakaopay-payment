@@ -2,7 +2,9 @@ package com.kakaopay.payment.core.payment.restclient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakaopay.payment.core.payment.dto.PaymentReadyDto;
+import com.kakaopay.payment.core.payment.dto.PaymentApproveRequest;
+import com.kakaopay.payment.core.payment.dto.PaymentReadyRequest;
+import com.kakaopay.payment.core.payment.response.PaymentApproveResponse;
 import com.kakaopay.payment.core.payment.response.PaymentReadyResponse;
 import com.kakaopay.payment.core.payment.enums.PaymentApiTypes;
 import com.kakaopay.payment.core.payment.response.PaymentResponse;
@@ -13,6 +15,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,9 +31,14 @@ public class KakaoRestClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public PaymentResponse<PaymentReadyResponse> requestPaymentReady(PaymentReadyDto paymentReadyDto) {
-        MultiValueMap<String, String> body = convertToSnakeCase(paymentReadyDto);
+    public PaymentResponse<PaymentReadyResponse> requestPaymentReady(PaymentReadyRequest paymentReadyRequest) {
+        MultiValueMap<String, String> body = convertToSnakeCase(paymentReadyRequest);
         return post(PaymentApiTypes.READY.getEndPoint(), body, PaymentReadyResponse.class);
+    }
+
+    public PaymentResponse<PaymentApproveResponse> requestPaymentApprove(PaymentApproveRequest paymentApproveRequest) {
+        MultiValueMap<String, String> body = convertToSnakeCase(paymentApproveRequest);
+        return post(PaymentApiTypes.APPROVE.getEndPoint(), body, PaymentApproveResponse.class);
     }
 
     public <T> PaymentResponse<T> post(String endPoint, MultiValueMap<String, String> body, Class<T> responseType) {
@@ -66,21 +74,21 @@ public class KakaoRestClient {
     private HttpHeaders getHttpHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        httpHeaders.add(HttpHeaders.AUTHORIZATION, "KakaoAK " + ADMIN_KEY);
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, "KakaoAK %s".formatted(ADMIN_KEY));
         return httpHeaders;
     }
 
-    private MultiValueMap<String, String> convertToSnakeCase(PaymentReadyDto paymentReadyDto) {
+    private <T> MultiValueMap<String, String> convertToSnakeCase(T object) {
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
-        Field[] fields = paymentReadyDto.getClass().getDeclaredFields();
+        Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
             String fieldName = field.getName();
-            String snakeCaseFieldName = convertCamelToSnakeCase(fieldName);
+            String snakeCaseFieldName = convertCamelCaseToSnakeCase(fieldName);
 
             try {
-                Object fieldValue = field.get(paymentReadyDto);
+                Object fieldValue = field.get(object);
                 if (fieldValue != null) {
                     multiValueMap.add(snakeCaseFieldName, fieldValue.toString());
                 }
@@ -91,7 +99,8 @@ public class KakaoRestClient {
         return multiValueMap;
     }
 
-    private String convertCamelToSnakeCase(String camelCase) {
+
+    private String convertCamelCaseToSnakeCase(String camelCase) {
         StringBuilder snakeCase = new StringBuilder();
         for (char c : camelCase.toCharArray()) {
             if (Character.isUpperCase(c)) {
